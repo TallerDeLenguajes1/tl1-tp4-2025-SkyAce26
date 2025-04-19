@@ -15,6 +15,7 @@ typedef struct Nodo{
 
 void crearLista(Nodo **lista);
 void cargarListaTareasPendientes(Nodo **TareasPendientes);
+void transferirATareasRealizadas(Nodo **TareasPendientes, Nodo** TareasRealizadas);
 
 int main(){
     Nodo *TareasPendientes;
@@ -26,6 +27,7 @@ int main(){
     crearLista(&TareasRealizadas);
 
     cargarListaTareasPendientes(&TareasPendientes);
+    transferirATareasRealizadas(&TareasPendientes, &TareasRealizadas);
 
     return 0;
 }
@@ -66,4 +68,29 @@ void cargarListaTareasPendientes(Nodo **TareasPendientes){
         scanf("%d", &agregarTarea);
 
     }
+}
+
+void transferirATareasRealizadas(Nodo **TareasPendientes, Nodo** TareasRealizadas){
+    int idTarea;
+    printf("Ingrese el id de la tarea que quiere pasar a la lista de tareas realizadas:\n");
+    scanf("%d", &idTarea);
+    Nodo**Aux=TareasPendientes;
+    
+    
+    while(*Aux && (*Aux)->T.TareaID != idTarea){
+
+        Aux = &(*Aux)->Siguiente;
+    }
+
+    if (*Aux) {
+        Nodo *mover = *Aux;
+        *Aux = (*Aux)->Siguiente;
+        
+        mover->Siguiente = *TareasRealizadas;
+        *TareasRealizadas = mover;
+        printf("Tarea %d movida a realizadas.\n", idTarea);
+    }else{
+        printf("Tarea no encontrada.\n");
+    }
+
 }
