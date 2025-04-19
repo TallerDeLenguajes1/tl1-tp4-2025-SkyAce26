@@ -16,6 +16,7 @@ typedef struct Nodo{
 void crearLista(Nodo **lista);
 void cargarListaTareasPendientes(Nodo **TareasPendientes);
 void transferirATareasRealizadas(Nodo **TareasPendientes, Nodo** TareasRealizadas);
+void mostrarListaDeTareas(Nodo *ListaTareas);
 
 int main(){
     Nodo *TareasPendientes;
@@ -28,6 +29,12 @@ int main(){
 
     cargarListaTareasPendientes(&TareasPendientes);
     transferirATareasRealizadas(&TareasPendientes, &TareasRealizadas);
+
+    printf("\nTareas pendientes:\n");
+    mostrarListaDeTareas(TareasPendientes);
+
+    printf("\nTareas realizadas:\n");
+    mostrarListaDeTareas(TareasRealizadas);
 
     return 0;
 }
@@ -93,4 +100,17 @@ void transferirATareasRealizadas(Nodo **TareasPendientes, Nodo** TareasRealizada
         printf("Tarea no encontrada.\n");
     }
 
+}
+
+void mostrarListaDeTareas(Nodo *ListaTareas){
+    Nodo*Aux=ListaTareas;
+
+    while(Aux!=NULL){
+        printf("ID: %d\n", Aux->T.TareaID);
+        printf("Descripcion: %s\n", Aux->T.Descripcion);
+        printf("Duracion: %d\n", Aux->T.Duracion);
+        printf("-------------------\n");
+
+        Aux = Aux->Siguiente;
+    }
 }
