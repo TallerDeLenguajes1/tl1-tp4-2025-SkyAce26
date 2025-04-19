@@ -17,6 +17,8 @@ void crearLista(Nodo **lista);
 void cargarListaTareasPendientes(Nodo **TareasPendientes);
 void transferirATareasRealizadas(Nodo **TareasPendientes, Nodo** TareasRealizadas);
 void mostrarListaDeTareas(Nodo *ListaTareas);
+void consultarTarea(Nodo *pendientes, Nodo *realizadas);
+void liberarLista(Nodo **lista);
 
 int main(){
     Nodo *TareasPendientes;
@@ -35,6 +37,11 @@ int main(){
 
     printf("\nTareas realizadas:\n");
     mostrarListaDeTareas(TareasRealizadas);
+
+    consultarTarea(TareasPendientes, TareasRealizadas);
+    
+    liberarLista(&TareasPendientes);
+    liberarLista(&TareasRealizadas);
 
     return 0;
 }
@@ -113,4 +120,93 @@ void mostrarListaDeTareas(Nodo *ListaTareas){
 
         Aux = Aux->Siguiente;
     }
+}
+
+void consultarTarea(Nodo *pendientes, Nodo *realizadas) {
+    int opcion;
+    printf("¿Cómo desea buscar la tarea?\n");
+    printf("1. Por ID\n");
+    printf("2. Por palabra clave\n");
+    scanf("%d", &opcion);
+    getchar();
+
+    if (opcion == 1) {
+        int id;
+        printf("Ingrese el ID de la tarea:\n");
+        scanf("%d", &id);
+
+        Nodo *aux = pendientes;
+        while (aux) {
+            if (aux->T.TareaID == id) {
+                printf("\nTarea encontrada en la lista pendientes:\n");
+                printf("ID: %d\nDescripcion: %sDuración: %d\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                return;
+            }
+            aux = aux->Siguiente;
+        }
+
+        aux = realizadas;
+        while (aux) {
+            if (aux->T.TareaID == id) {
+                printf("\nTarea encontrada en la lista realizadas:\n");
+                printf("ID: %d\nDescripcion: %sDuración: %d\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                return;
+            }
+            aux = aux->Siguiente;
+        }
+
+        printf("No se encontró ninguna tarea con ese ID.\n");
+
+    } else if (opcion == 2) {
+        char palabra[100];
+        printf("Ingrese palabra clave para buscar en la descripción:\n");
+        gets(palabra);
+
+        int encontrada = 0;
+
+        Nodo *aux = pendientes;
+        while (aux) {
+            if (strstr(aux->T.Descripcion, palabra)) {
+                printf("\nTarea encontrada en pendientes:\n");
+                printf("ID: %d\nDescripcion: %sDuración: %d\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                encontrada = 1;
+            }
+            aux = aux->Siguiente;
+        }
+
+        aux = realizadas;
+        while (aux) {
+            if (strstr(aux->T.Descripcion, palabra)) {
+                printf("\nTarea encontrada en realizadas:\n");
+                printf("ID: %d\nDescripcion: %sDuración: %d\n", aux->T.TareaID, aux->T.Descripcion, aux->T.Duracion);
+                encontrada = 1;
+            }
+            aux = aux->Siguiente;
+        }
+
+        if (!encontrada) {
+            printf("No se encontró ninguna tarea con esa palabra clave.\n");
+        }
+
+    } else {
+        printf("Opción inválida.\n");
+    }
+}
+
+void liberarLista(Nodo **lista){
+    Nodo *actual = *lista;
+    Nodo *temp;
+
+    while (actual != NULL) {
+        temp = actual;
+        actual = actual->Siguiente;
+
+        if (temp->T.Descripcion != NULL) {
+            free(temp->T.Descripcion);
+        }
+
+        free(temp); // Liberar el nodo
+    }
+
+    *lista = NULL;
 }
